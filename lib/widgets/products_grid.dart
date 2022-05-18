@@ -28,7 +28,7 @@ class ProductsGrid extends StatelessWidget {
         // Pakai value
         // Kalau datanya dipake di list/grid item
         value: products[i],
-        child: ProductItem(),
+        child: const ProductItem(),
       ),
     );
   }

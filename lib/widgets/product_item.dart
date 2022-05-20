@@ -38,7 +38,7 @@ class ProductItem extends StatelessWidget {
                   try {
                     await value.toggleFavorite();
                   } catch (e) {
-                    scaffoldMessenger.showSnackBar(SnackBar(
+                    scaffoldMessenger.showSnackBar(const SnackBar(
                       content: Text('Could not favorite item.'),
                     ));
                   }

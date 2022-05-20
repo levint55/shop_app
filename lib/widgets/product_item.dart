@@ -7,18 +7,11 @@ import 'package:shop_app/screens/product_detail_screen.dart';
 class ProductItem extends StatelessWidget {
   const ProductItem({Key? key}) : super(key: key);
 
-  Widget _buildIconButton(VoidCallback onPressed, Icon icon, Color color) {
-    return IconButton(
-      onPressed: onPressed,
-      icon: icon,
-      color: color,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -40,15 +33,24 @@ class ProductItem extends StatelessWidget {
             ),
             leading: Consumer<Product>(
               // Pakai consumer untuk re-render sebagian widgetnya
-              builder: (context, value, child) => _buildIconButton(
-                  value.toggleFavorite,
-                  Icon(
-                    value.isFavorite ? Icons.favorite : Icons.favorite_outline,
-                  ),
-                  Colors.orange),
+              builder: (context, value, child) => IconButton(
+                onPressed: () async {
+                  try {
+                    await value.toggleFavorite();
+                  } catch (e) {
+                    scaffoldMessenger.showSnackBar(SnackBar(
+                      content: Text('Could not favorite item.'),
+                    ));
+                  }
+                },
+                icon: Icon(
+                  value.isFavorite ? Icons.favorite : Icons.favorite_outline,
+                ),
+                color: Colors.orange,
+              ),
             ),
-            trailing: _buildIconButton(
-              () {
+            trailing: IconButton(
+              onPressed: () {
                 cart.addItem(product.id, product.price, product.title);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -64,8 +66,8 @@ class ProductItem extends StatelessWidget {
                   ),
                 );
               },
-              const Icon(Icons.shopping_cart),
-              Theme.of(context).colorScheme.secondary,
+              icon: const Icon(Icons.shopping_cart),
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
         ),

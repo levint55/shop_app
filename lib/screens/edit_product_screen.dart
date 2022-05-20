@@ -25,6 +25,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'price': '',
     'imageUrl': '',
   };
+  var _isLoading = false;
 
   @override
   void dispose() {
@@ -75,18 +76,48 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
     }
     _form.currentState?.save();
+    setState(() {
+      _isLoading = true;
+    });
     if (_product.id != '') {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_product.id, _product);
     } else {
-      Provider.of<Products>(context, listen: false).addProduct(_product);
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_product);
+      } catch (e) {
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('An error occured'),
+            content: const Text('Something went wrong'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Okay'),
+              ),
+            ],
+          ),
+        );
+      }
+      // finally {
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      //   Navigator.of(context).pop();
+      // }
+
     }
+    setState(() {
+      _isLoading = false;
+    });
     Navigator.of(context).pop();
   }
 
@@ -127,134 +158,139 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ))
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Form(
-          key: _form,
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                _buildTextFormField(
-                    (newValue) => _product = Product(
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(15),
+              child: Form(
+                key: _form,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      _buildTextFormField(
+                          (newValue) => _product = Product(
+                                isFavorite: _product.isFavorite,
+                                id: _product.id,
+                                title: newValue!,
+                                description: _product.description,
+                                price: _product.price,
+                                imageUrl: _product.imageUrl,
+                              ),
+                          'Title', (value) {
+                        if (value!.isEmpty) {
+                          return 'Please provide a value.';
+                        }
+                        return null;
+                      }, _initValue['title']),
+                      _buildTextFormField(
+                        (newValue) => _product = Product(
                           isFavorite: _product.isFavorite,
                           id: _product.id,
-                          title: newValue!,
+                          title: _product.title,
                           description: _product.description,
-                          price: _product.price,
+                          price: double.parse(newValue!),
                           imageUrl: _product.imageUrl,
                         ),
-                    'Title', (value) {
-                  if (value!.isEmpty) {
-                    return 'Please provide a value.';
-                  }
-                  return null;
-                }, _initValue['title']),
-                _buildTextFormField(
-                  (newValue) => _product = Product(
-                    isFavorite: _product.isFavorite,
-                    id: _product.id,
-                    title: _product.title,
-                    description: _product.description,
-                    price: double.parse(newValue!),
-                    imageUrl: _product.imageUrl,
-                  ),
-                  'Price',
-                  (value) {
-                    if (value!.isEmpty) {
-                      return 'Please provide a value.';
-                    }
-                    if (double.tryParse(value) == null) {
-                      return 'Please enter a valid number';
-                    }
-                    if (double.parse(value) <= 0) {
-                      return 'Please enter a number greater than 0';
-                    }
-                    return null;
-                  },
-                  _initValue['price'],
-                  keyboardType: TextInputType.number,
-                ),
-                _buildTextFormField(
-                  (newValue) => _product = Product(
-                    isFavorite: _product.isFavorite,
-                    id: _product.id,
-                    title: _product.title,
-                    description: newValue!,
-                    price: _product.price,
-                    imageUrl: _product.imageUrl,
-                  ),
-                  'Description',
-                  (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter a description.';
-                    }
-                    if (value.length < 10) {
-                      return 'Description should be at least 10 characters long.';
-                    }
-                    return null;
-                  },
-                  _initValue['description'],
-                  maxLines: 3,
-                  keyboardType: TextInputType.multiline,
-                  action: TextInputAction.newline,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.grey)),
-                      width: 100,
-                      height: 100,
-                      margin: const EdgeInsets.only(
-                        top: 8,
-                        right: 10,
+                        'Price',
+                        (value) {
+                          if (value!.isEmpty) {
+                            return 'Please provide a value.';
+                          }
+                          if (double.tryParse(value) == null) {
+                            return 'Please enter a valid number';
+                          }
+                          if (double.parse(value) <= 0) {
+                            return 'Please enter a number greater than 0';
+                          }
+                          return null;
+                        },
+                        _initValue['price'],
+                        keyboardType: TextInputType.number,
                       ),
-                      child: _imageUrlController.text.isEmpty
-                          ? const Center(child: Text('Enter a URL'))
-                          : FittedBox(
-                              child: Image.network(
-                                _imageUrlController.text,
-                              ),
-                            ),
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        onSaved: (newValue) => _product = Product(
+                      _buildTextFormField(
+                        (newValue) => _product = Product(
                           isFavorite: _product.isFavorite,
                           id: _product.id,
                           title: _product.title,
                           description: newValue!,
                           price: _product.price,
-                          imageUrl: newValue,
+                          imageUrl: _product.imageUrl,
                         ),
-                        decoration: const InputDecoration(
-                          labelText: 'Image Url',
-                        ),
-                        keyboardType: TextInputType.url,
-                        textInputAction: TextInputAction.done,
-                        controller: _imageUrlController,
-                        focusNode: _imageUrlFocusNode,
-                        onFieldSubmitted: (_) => _saveForm(),
-                        validator: (value) {
+                        'Description',
+                        (value) {
                           if (value!.isEmpty) {
-                            return 'Please enter an image URL.';
+                            return 'Please enter a description.';
                           }
-                          if (!value.startsWith('http') ||
-                              !value.startsWith('https')) {
-                            return 'Please enter a valid url';
+                          if (value.length < 10) {
+                            return 'Description should be at least 10 characters long.';
                           }
                           return null;
                         },
+                        _initValue['description'],
+                        maxLines: 3,
+                        keyboardType: TextInputType.multiline,
+                        action: TextInputAction.newline,
                       ),
-                    )
-                  ],
-                )
-              ],
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1, color: Colors.grey)),
+                            width: 100,
+                            height: 100,
+                            margin: const EdgeInsets.only(
+                              top: 8,
+                              right: 10,
+                            ),
+                            child: _imageUrlController.text.isEmpty
+                                ? const Center(child: Text('Enter a URL'))
+                                : FittedBox(
+                                    child: Image.network(
+                                      _imageUrlController.text,
+                                    ),
+                                  ),
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              onSaved: (newValue) => _product = Product(
+                                isFavorite: _product.isFavorite,
+                                id: _product.id,
+                                title: _product.title,
+                                description: _product.description,
+                                price: _product.price,
+                                imageUrl: newValue!,
+                              ),
+                              decoration: const InputDecoration(
+                                labelText: 'Image Url',
+                              ),
+                              keyboardType: TextInputType.url,
+                              textInputAction: TextInputAction.done,
+                              controller: _imageUrlController,
+                              focusNode: _imageUrlFocusNode,
+                              onFieldSubmitted: (_) => _saveForm(),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter an image URL.';
+                                }
+                                if (!value.startsWith('http') ||
+                                    !value.startsWith('https')) {
+                                  return 'Please enter a valid url';
+                                }
+                                return null;
+                              },
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

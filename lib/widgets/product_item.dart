@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/screens/product_detail_screen.dart';
@@ -11,6 +12,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     return ClipRRect(
@@ -36,7 +38,7 @@ class ProductItem extends StatelessWidget {
               builder: (context, value, child) => IconButton(
                 onPressed: () async {
                   try {
-                    await value.toggleFavorite();
+                    await value.toggleFavorite(authData.token, authData.userId);
                   } catch (e) {
                     scaffoldMessenger.showSnackBar(const SnackBar(
                       content: Text('Could not favorite item.'),

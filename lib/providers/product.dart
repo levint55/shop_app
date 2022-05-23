@@ -27,10 +27,16 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String? token, String? userId) async {
+    var _params = {
+      'auth': token,
+    };
+
     final url = Uri.https(
-        'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/products/$id.json');
+      'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
+      '/userFavorites/$userId/$id.json',
+      _params,
+    );
 
     final oldValue = isFavorite;
     isFavorite = !isFavorite;
@@ -40,7 +46,7 @@ class Product with ChangeNotifier {
 
     try {
       final response =
-          await http.patch(url, body: json.encode({'isFavorite': isFavorite}));
+          await http.put(url, body: json.encode({'isFavorite': isFavorite}));
 
       if (response.statusCode >= 400) {
         _setFavorite(oldValue);

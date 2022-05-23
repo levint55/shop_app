@@ -8,15 +8,25 @@ import 'package:http/http.dart' as http;
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
+  final String? _authToken;
+  final String? _userId;
+
+  Orders(this._authToken, this._orders, this._userId);
 
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> fetchData() async {
+    var _params = {
+      'auth': _authToken,
+    };
+
     final url = Uri.https(
-        'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/orders.json');
+      'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
+      '/orders/$_userId.json',
+      _params,
+    );
     final response = await http.get(url);
     final List<OrderItem> loadedOrder = [];
     final Map<String, dynamic>? extractedData =
@@ -47,9 +57,15 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+    var _params = {
+      'auth': _authToken,
+    };
+
     final url = Uri.https(
-        'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/orders.json');
+      'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
+      '/orders/$_userId.json',
+      _params,
+    );
     final timestamp = DateTime.now();
     try {
       final response = await http.post(url,

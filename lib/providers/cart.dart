@@ -41,21 +41,23 @@ class Cart with ChangeNotifier {
 
     try {
       final response = await http.get(url);
-
-      final Map<String, dynamic> data = json.decode(response.body);
-
       Map<String, dynamic> temp = {};
-      data.forEach(
-        (key, value) {
-          temp[key] = CartItem(
-            id: key,
-            title: value['title'],
-            quantity: value['quantity'],
-            price: value['price'],
-            imageUrl: value['imageUrl'],
-          );
-        },
-      );
+
+      if (response.body != "null") {
+        final Map<String, dynamic> data = json.decode(response.body);
+        data.forEach(
+          (key, value) {
+            temp[key] = CartItem(
+              id: key,
+              title: value['title'],
+              quantity: value['quantity'],
+              price: value['price'],
+              imageUrl: value['imageUrl'],
+            );
+          },
+        );
+      }
+
       _items = temp;
 
       if (response.statusCode >= 400) {

@@ -33,6 +33,8 @@ class Orders with ChangeNotifier {
         json.decode(response.body) as Map<String, dynamic>?;
 
     if (extractedData == null) {
+      _orders = loadedOrder;
+      notifyListeners();
       return;
     }
 

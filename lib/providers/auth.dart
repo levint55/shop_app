@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_app/models/http_exception.dart';
+import 'package:shop_app/secrets.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
   DateTime? _expiryDate;
   String? _userId;
   Timer? _authTimer;
-  static String API_KEY = 'AIzaSyAGuWUAo2B_csiB5yxjmjw6Vx5-lEKySQw';
+  static String API_KEY = apiKey;
 
   bool get isAuth {
     return token != null;

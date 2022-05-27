@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "410546567582",
+    "firebase_url": "https://flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "flutter-shop-app-be36b",
+    "storage_bucket": "flutter-shop-app-be36b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410546567582:android:1d6ac78c08541844c73e8f",
+        "android_client_info": {
+          "package_name": "com.amabel.shop_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410546567582-ba0s72g5pfe6kdtc8hghvf7qq2nnl0gd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADzUJjZDkJy5E6Mg_UQbZ6bys0BoIVvF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410546567582-ba0s72g5pfe6kdtc8hghvf7qq2nnl0gd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

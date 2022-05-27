@@ -66,9 +66,22 @@ class Cart with ChangeNotifier {
     }
   }
 
-  void removeAllItem(String productId) {
+  Future removeAllItem(String productId) async {
     _items.remove(productId);
-    notifyListeners();
+    try {
+      var _params = {
+        'auth': _authToken,
+      };
+      var url = Uri.https(
+        'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
+        '/carts/$_userId/$productId.json',
+        _params,
+      );
+      await http.delete(url);
+      notifyListeners();
+    } catch (e) {
+      notifyListeners();
+    }
   }
 
   Future addItem(
@@ -145,12 +158,29 @@ class Cart with ChangeNotifier {
     }
   }
 
-  void clearCart() {
+  Future clearCart() async {
     _items = {};
-    notifyListeners();
+    try {
+      var _params = {
+        'auth': _authToken,
+      };
+      var url = Uri.https(
+        'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
+        '/carts/$_userId.json',
+        _params,
+      );
+      await http.delete(url);
+      notifyListeners();
+    } catch (e) {
+      notifyListeners();
+    }
   }
 
-  void removeSingleItem(String productId) {
+  Future removeSingleItem(String productId) async {
+    var _params = {
+      'auth': _authToken,
+    };
+
     if (!_items.containsKey(productId)) {
       return;
     }
@@ -165,9 +195,39 @@ class Cart with ChangeNotifier {
           imageUrl: existingCartItem.imageUrl,
         ),
       );
+
+      try {
+        var url = Uri.https(
+          'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
+          '/carts/$_userId/$productId.json',
+          _params,
+        );
+        var newRecord = {
+          'title': _items[productId]!.title,
+          'quantity': _items[productId]!.quantity,
+          'price': _items[productId]!.price,
+          'imageUrl': _items[productId]!.imageUrl,
+        };
+
+        final response = await http.patch(url, body: json.encode(newRecord));
+
+        notifyListeners();
+      } catch (e) {
+        notifyListeners();
+      }
     } else {
       _items.remove(productId);
+      try {
+        var url = Uri.https(
+          'flutter-shop-app-be36b-default-rtdb.asia-southeast1.firebasedatabase.app',
+          '/carts/$_userId/$productId.json',
+          _params,
+        );
+        await http.delete(url);
+        notifyListeners();
+      } catch (e) {
+        notifyListeners();
+      }
     }
-    notifyListeners();
   }
 }

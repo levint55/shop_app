@@ -53,19 +53,27 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               Icons.more_vert,
             ),
           ),
-          Consumer<Cart>(
-            builder: (context, cart, child) => Badge(
-              value: cart.itemCount.toString(),
-              child: child!,
-            ),
-            child: IconButton(
-              icon: const Icon(
-                Icons.shopping_cart,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, CartScreen.routeName);
-              },
-            ),
+          FutureBuilder(
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+              return Consumer<Cart>(
+                builder: (context, cart, child) => Badge(
+                  value: cart.itemCount.toString(),
+                  child: child!,
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.shopping_cart,
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, CartScreen.routeName);
+                  },
+                ),
+              );
+            },
+            future: Provider.of<Cart>(context, listen: false).fetchData(),
           )
         ],
       ),

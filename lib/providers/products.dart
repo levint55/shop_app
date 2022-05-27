@@ -75,9 +75,9 @@ class Products with ChangeNotifier {
                   ? false
                   : favoritesData[productId]['isFavorite'],
         ));
-        _items = loadedProduct;
-        notifyListeners();
       });
+      _items = loadedProduct;
+      notifyListeners();
     } catch (e) {
       rethrow;
     }

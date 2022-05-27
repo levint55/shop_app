@@ -1,7 +1,7 @@
 class CartItem {
   final String id;
   final String title;
-  final int quantity;
+  int quantity;
   final double price;
 
   CartItem(
@@ -9,4 +9,12 @@ class CartItem {
       required this.title,
       required this.quantity,
       required this.price});
+
+  void increaseQuantity() {
+    quantity++;
+  }
+
+  void decreaseQuantity() {
+    quantity--;
+  }
 }

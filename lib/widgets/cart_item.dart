@@ -46,7 +46,7 @@ class CartItem extends StatelessWidget {
         );
       },
       onDismissed: (direction) {
-        Provider.of<Cart>(context, listen: false).removeItem(productId);
+        Provider.of<Cart>(context, listen: false).removeAllItem(productId);
       },
       direction: DismissDirection.endToStart,
       key: ValueKey(id),
@@ -76,7 +76,28 @@ class CartItem extends StatelessWidget {
             ),
             title: Text(title),
             subtitle: Text('Total: \$${(price * quantity)}'),
-            trailing: Text('$quantity x'),
+            trailing: SizedBox(
+              width: 120,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (quantity > 1)
+                    IconButton(
+                        onPressed: () {
+                          Provider.of<Cart>(context, listen: false)
+                              .removeSingleItem(productId);
+                        },
+                        icon: Icon(Icons.remove)),
+                  IconButton(
+                      onPressed: () {
+                        Provider.of<Cart>(context, listen: false)
+                            .addItem(productId, price, title);
+                      },
+                      icon: Icon(Icons.add)),
+                  Text('$quantity x')
+                ],
+              ),
+            ),
           ),
         ),
       ),

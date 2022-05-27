@@ -8,15 +8,17 @@ class CartItem extends StatelessWidget {
   final double price;
   final int quantity;
   final String title;
+  final String imageUrl;
 
-  const CartItem({
-    Key? key,
-    required this.id,
-    required this.price,
-    required this.quantity,
-    required this.title,
-    required this.productId,
-  }) : super(key: key);
+  const CartItem(
+      {Key? key,
+      required this.id,
+      required this.price,
+      required this.quantity,
+      required this.title,
+      required this.productId,
+      required this.imageUrl})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +68,12 @@ class CartItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: ListTile(
-            leading: CircleAvatar(
-              child: Padding(
-                padding: const EdgeInsets.all(3),
-                child: FittedBox(
-                  child: Text('\$$price'),
-                ),
+            leading: Container(
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.black, width: 1)),
+              child: CircleAvatar(
+                foregroundImage: NetworkImage(imageUrl),
               ),
             ),
             title: Text(title),
@@ -91,7 +93,7 @@ class CartItem extends StatelessWidget {
                   IconButton(
                       onPressed: () {
                         Provider.of<Cart>(context, listen: false)
-                            .addItem(productId, price, title);
+                            .addItem(productId, price, title, imageUrl);
                       },
                       icon: Icon(Icons.add)),
                   Text('$quantity x')

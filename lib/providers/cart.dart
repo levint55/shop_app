@@ -29,6 +29,7 @@ class Cart with ChangeNotifier {
     String productId,
     double price,
     String title,
+    String imageUrl,
   ) {
     if (_items.containsKey(productId)) {
       _items.update(
@@ -38,6 +39,7 @@ class Cart with ChangeNotifier {
           title: existingCartItem.title,
           quantity: existingCartItem.quantity + 1,
           price: existingCartItem.price,
+          imageUrl: existingCartItem.imageUrl,
         ),
       );
     } else {
@@ -48,6 +50,7 @@ class Cart with ChangeNotifier {
           title: title,
           quantity: 1,
           price: price,
+          imageUrl: imageUrl,
         ),
       );
     }
@@ -67,10 +70,12 @@ class Cart with ChangeNotifier {
       _items.update(
         productId,
         (existingCartItem) => CartItem(
-            id: existingCartItem.id,
-            title: existingCartItem.title,
-            quantity: existingCartItem.quantity - 1,
-            price: existingCartItem.price),
+          id: existingCartItem.id,
+          title: existingCartItem.title,
+          quantity: existingCartItem.quantity - 1,
+          price: existingCartItem.price,
+          imageUrl: existingCartItem.imageUrl,
+        ),
       );
     } else {
       _items.remove(productId);

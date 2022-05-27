@@ -43,10 +43,12 @@ class Orders with ChangeNotifier {
           amount: orderData['amount'],
           products: (orderData['products'] as List<dynamic>).map((element) {
             return CartItem(
-                id: element['id'],
-                title: element['title'],
-                quantity: element['quantity'],
-                price: element['price']);
+              id: element['id'],
+              title: element['title'],
+              quantity: element['quantity'],
+              price: element['price'],
+              imageUrl: element['imageUrl'],
+            );
           }).toList(),
           datetime: DateTime.parse(orderData['datetime']),
         ),

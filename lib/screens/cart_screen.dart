@@ -18,68 +18,56 @@ class CartScreen extends StatelessWidget {
           'Your Cart',
         ),
       ),
-      body: FutureBuilder(
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return Column(
-            children: <Widget>[
-              Card(
-                margin: const EdgeInsets.all(10),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      const Text(
-                        'Total',
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                      const Spacer(),
-                      Chip(
-                        label: Text(
-                          '\$${cart.totalAmount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .primaryTextTheme
-                                .headline6
-                                ?.color,
-                          ),
-                        ),
-                        backgroundColor:
-                            Theme.of(context).chipTheme.backgroundColor,
-                      ),
-                      OrderButton(cart: cart)
-                    ],
+      body: Column(
+        children: <Widget>[
+          Card(
+            margin: const EdgeInsets.all(10),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const Text(
+                    'Total',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
-                ),
+                  const Spacer(),
+                  Chip(
+                    label: Text(
+                      '\$${cart.totalAmount.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).primaryTextTheme.headline6?.color,
+                      ),
+                    ),
+                    backgroundColor:
+                        Theme.of(context).chipTheme.backgroundColor,
+                  ),
+                  OrderButton(cart: cart)
+                ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                  child: ListView.builder(
-                itemCount: cart.items.length,
-                itemBuilder: (context, index) {
-                  return CartItem(
-                    productId: cart.items.keys.toList()[index],
-                    id: cart.items.values.toList()[index].id,
-                    title: cart.items.values.toList()[index].title,
-                    quantity: cart.items.values.toList()[index].quantity,
-                    price: cart.items.values.toList()[index].price,
-                    imageUrl: cart.items.values.toList()[index].imageUrl,
-                  );
-                },
-              ))
-            ],
-          );
-        },
-        future: Provider.of<Cart>(context, listen: false).fetchData(),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
+              child: ListView.builder(
+            itemCount: cart.items.length,
+            itemBuilder: (context, index) {
+              return CartItem(
+                productId: cart.items.keys.toList()[index],
+                id: cart.items.values.toList()[index].id,
+                title: cart.items.values.toList()[index].title,
+                quantity: cart.items.values.toList()[index].quantity,
+                price: cart.items.values.toList()[index].price,
+                imageUrl: cart.items.values.toList()[index].imageUrl,
+              );
+            },
+          ))
+        ],
       ),
     );
   }

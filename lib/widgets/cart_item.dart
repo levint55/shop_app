@@ -89,13 +89,13 @@ class CartItem extends StatelessWidget {
                           Provider.of<Cart>(context, listen: false)
                               .removeSingleItem(productId);
                         },
-                        icon: Icon(Icons.remove)),
+                        icon: const Icon(Icons.remove)),
                   IconButton(
                       onPressed: () {
                         Provider.of<Cart>(context, listen: false)
                             .addItem(productId, price, title, imageUrl);
                       },
-                      icon: Icon(Icons.add)),
+                      icon: const Icon(Icons.add)),
                   Text('$quantity x')
                 ],
               ),

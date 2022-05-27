@@ -79,7 +79,8 @@ class Orders with ChangeNotifier {
                       'id': e.id,
                       'title': e.title,
                       'quantity': e.quantity,
-                      'price': e.price
+                      'price': e.price,
+                      'imageUrl': e.imageUrl
                     })
                 .toList(),
           }));

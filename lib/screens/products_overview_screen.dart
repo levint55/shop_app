@@ -56,7 +56,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           FutureBuilder(
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
               return Consumer<Cart>(
                 builder: (context, cart, child) => Badge(

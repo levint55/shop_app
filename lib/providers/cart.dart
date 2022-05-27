@@ -121,10 +121,12 @@ class Cart with ChangeNotifier {
           '/carts/$_userId/$productId.json',
           _params,
         );
-        final response = await http.patch(url, body: json.encode(newRecord));
+        await http.patch(url, body: json.encode(newRecord));
 
         notifyListeners();
-      } catch (e) {}
+      } catch (e) {
+        notifyListeners();
+      }
     } else {
       _items.putIfAbsent(
         productId,
@@ -151,10 +153,12 @@ class Cart with ChangeNotifier {
           _params,
         );
 
-        final response = await http.post(url, body: json.encode(newRecord));
+        await http.post(url, body: json.encode(newRecord));
 
         notifyListeners();
-      } catch (e) {}
+      } catch (e) {
+        notifyListeners();
+      }
     }
   }
 
@@ -209,7 +213,7 @@ class Cart with ChangeNotifier {
           'imageUrl': _items[productId]!.imageUrl,
         };
 
-        final response = await http.patch(url, body: json.encode(newRecord));
+        await http.patch(url, body: json.encode(newRecord));
 
         notifyListeners();
       } catch (e) {
